@@ -5,6 +5,18 @@ import { UserActions, WithdrawButton } from '@/components/admin/RowActions'
 
 export const dynamic = 'force-dynamic'
 
+interface UserLean {
+  _id: unknown
+  fullName: string
+  emailNormalized: string
+  phone: string
+  dialCode: string
+  countryCode: string
+  role: string
+  status: string
+  createdAt: Date
+}
+
 interface KycLean {
   _id: unknown
   idNumberNormalized: string
@@ -13,27 +25,50 @@ interface KycLean {
   submittedAt: Date
 }
 
+interface WalletLean {
+  _id: unknown
+  balances?: { USD?: number }
+}
+
+interface TransactionLean {
+  _id: unknown
+  type: string
+  method: string
+  provider: string
+  amount: number
+  amountUsd: number
+  currency: string
+  status: string
+  createdAt: Date
+}
+
+interface SellerLean {
+  _id: unknown
+  businessName: string
+  kycStatus: string
+}
+
 export default async function AdminUserDetail({ params }: { params: { id: string } }) {
   await connectMongo()
-  const user: any = await User.findById(params.id).lean().catch(() => null)
+  const user = await User.findById(params.id).lean<UserLean | null>().catch(() => null)
   if (!user) notFound()
 
   const [kyc, wallet, txns, seller] = await Promise.all([
     KycRecord.findOne({ userId: user._id }).lean<KycLean | null>(),
-    Wallet.findOne({ userId: user._id }).lean(),
-    Transaction.find({ userId: user._id }).sort({ createdAt: -1 }).limit(100).lean(),
-    Seller.findOne({ userId: user._id }).lean()
+    Wallet.findOne({ userId: user._id }).lean<WalletLean | null>(),
+    Transaction.find({ userId: user._id }).sort({ createdAt: -1 }).limit(100).lean<TransactionLean[]>(),
+    Seller.findOne({ userId: user._id }).lean<SellerLean | null>()
   ])
 
-  const balanceUsd = (wallet as any)?.balances?.USD || 0
+  const balanceUsd = wallet?.balances?.USD || 0
 
   const inflow = txns
-    .filter((t: any) => t.type === 'deposit' && t.status === 'confirmed')
-    .reduce((s: number, t: any) => s + (t.amountUsd || 0), 0)
+    .filter(t => t.type === 'deposit' && t.status === 'confirmed')
+    .reduce((s, t) => s + (t.amountUsd || 0), 0)
 
   const outflow = txns
-    .filter((t: any) => ['order_payment', 'fee', 'payout', 'withdrawal'].includes(t.type))
-    .reduce((s: number, t: any) => s + (t.amountUsd || 0), 0)
+    .filter(t => ['order_payment', 'fee', 'payout', 'withdrawal'].includes(t.type))
+    .reduce((s, t) => s + (t.amountUsd || 0), 0)
 
   return (
     <div className="space-y-6">
@@ -129,7 +164,7 @@ export default async function AdminUserDetail({ params }: { params: { id: string
               </tr>
             </thead>
             <tbody>
-              {txns.map((t: any) => (
+              {txns.map(t => (
                 <tr key={String(t._id)} className="border-t border-surface-border">
                   <td className="py-2 text-text-muted">{new Date(t.createdAt).toLocaleString()}</td>
                   <td className="py-2">{t.type}</td>
