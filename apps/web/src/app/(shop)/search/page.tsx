@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Container } from '@/components/layout/Container'
 import { SearchFilters, Filters } from '@/components/search/SearchFilters'
@@ -18,7 +18,7 @@ interface ApiProduct {
   createdAt: string
 }
 
-export default function SearchPage() {
+function SearchInner() {
   const params = useSearchParams()
   const initialQ = params.get('q') || ''
   const [q, setQ] = useState(initialQ)
@@ -35,7 +35,6 @@ export default function SearchPage() {
   const [markup, setMarkup] = useState(0)
 
   useEffect(() => {
-    // read country from cookie set by middleware or fallback
     const m = document.cookie.match(/country=([A-Z]{2})/)
     setCountry(m?.[1] || 'US')
   }, [])
@@ -63,7 +62,7 @@ export default function SearchPage() {
         setItems(d.products || [])
         setMarkup(d.importMarkupPercent || 0)
       })
-      .finally(() => !cancelled && setLoading(false))
+      .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
   }, [query])
 
@@ -107,5 +106,13 @@ export default function SearchPage() {
         </div>
       )}
     </Container>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<Container className="py-10 text-text-muted">Loading search…</Container>}>
+      <SearchInner />
+    </Suspense>
   )
 }
