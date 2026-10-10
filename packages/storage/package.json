@@ -1,0 +1,14 @@
+{
+  "name": "@dd/storage",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/upload.ts",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.620.0",
+    "@aws-sdk/s3-request-presigner": "^3.620.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "@types/node": "^20.14.10"
+  }
+}

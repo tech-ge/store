@@ -1,0 +1,11 @@
+export type PaymentMethod = 'card' | 'crypto' | 'mobile_money' | 'internal' | 'bank'
+export type PaymentProvider =
+  | 'stripe'
+  | 'flutterwave'
+  | 'paystack'
+  | 'mpesa'
+  | 'paytm'
+  | 'pix'
+  | 'coinbase'
+  | 'binancepay'
+  | 'usdt'

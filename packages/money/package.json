@@ -1,0 +1,9 @@
+{
+  "name": "@dd/money",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/convert.ts",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

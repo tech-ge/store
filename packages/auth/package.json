@@ -1,0 +1,12 @@
+{
+  "name": "@dd/auth",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/require-auth.ts",
+  "dependencies": {
+    "@dd/security": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

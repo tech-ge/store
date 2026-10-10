@@ -1,0 +1,13 @@
+{
+  "name": "@dd/payments",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/stripe.ts",
+  "dependencies": {
+    "stripe": "^16.6.0",
+    "tronweb": "^5.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

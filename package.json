@@ -1,0 +1,25 @@
+{
+  "name": "door-delivery",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "seed": "tsx database/seeds/index.ts",
+    "seed:categories": "tsx database/seeds/categories.ts",
+    "seed:countries": "tsx database/seeds/countries.ts",
+    "indexes": "tsx database/indexes/apply.ts"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.6",
+    "typescript": "^5.4.5",
+    "tsx": "^4.16.2",
+    "@types/node": "^20.14.10"
+  },
+  "packageManager": "pnpm@9.5.0",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
