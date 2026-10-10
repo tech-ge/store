@@ -1,3 +1,6 @@
+import { loadEnv } from '../load-env'
+loadEnv()
+
 import { seedCategories } from './categories'
 import { seedCountries } from './countries'
 

@@ -3,10 +3,16 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
-import { authFetch, authJson } from '@/lib/auth-fetch'
+import { authJson } from '@/lib/auth-fetch'
 import { CATEGORY_TREE } from '@/lib/data/categories'
 
-interface StoreOpt { countryCode: string; countryName: string; currency: string }
+interface StoreOpt {
+  countryCode: string
+  countryName: string
+  storeName: string
+  currency: string
+  currencySymbol: string
+}
 
 export default function NewProductPage() {
   const router = useRouter()
@@ -16,7 +22,7 @@ export default function NewProductPage() {
   const [form, setForm] = useState({
     title: '', description: '',
     categoryMain: '', categorySub: '',
-    storeId: '', priceUsd: '', stock: '',
+    storeCountry: '', priceUsd: '', stock: '',
     imageUrl: '', isGlobal: false
   })
   const [imagePreview, setImagePreview] = useState('')
@@ -50,6 +56,7 @@ export default function NewProductPage() {
     setError('')
 
     if (!form.categoryMain) return setError('Pick a category')
+    if (!form.storeCountry) return setError('Pick a country store')
     const categorySlug = form.categorySub || form.categoryMain
 
     let finalImage = ''
@@ -70,7 +77,7 @@ export default function NewProductPage() {
           description: form.description,
           images: [finalImage],
           categorySlug,
-          storeCountry: form.storeId,
+          storeCountry: form.storeCountry,
           priceUsd: Number(form.priceUsd),
           stock: Number(form.stock) || 0,
           isGlobal: form.isGlobal
@@ -146,10 +153,14 @@ export default function NewProductPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <select value={form.storeId} onChange={e => upd('storeId', e.target.value)} required
+          <select value={form.storeCountry} onChange={e => upd('storeCountry', e.target.value)} required
             className="px-3 py-2.5 rounded-xl border border-surface-border bg-white text-sm">
-            <option value="">Country store</option>
-            {stores.map(s => <option key={s.countryCode} value={s.countryCode}>{s.countryName} ({s.currency})</option>)}
+            <option value="">Select country store</option>
+            {stores.map(s => (
+              <option key={s.countryCode} value={s.countryCode}>
+                {s.storeName} — {s.countryName} ({s.currency})
+              </option>
+            ))}
           </select>
 
           <div className="grid grid-cols-2 gap-2">

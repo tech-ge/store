@@ -6,6 +6,7 @@ import { authJson } from '@/lib/auth-fetch'
 export function StoreRow(props: {
   countryCode: string
   countryName: string
+  storeName: string
   currency: string
   currencySymbol: string
   productsCount: number
@@ -36,7 +37,8 @@ export function StoreRow(props: {
 
   return (
     <tr className="border-t border-surface-border">
-      <td className="px-4 py-2 text-navy">{props.countryName} <span className="text-text-muted">({props.countryCode})</span></td>
+      <td className="px-4 py-2 text-navy font-medium">{props.storeName}</td>
+      <td className="px-4 py-2 text-text-muted">{props.countryName} ({props.countryCode})</td>
       <td className="px-4 py-2">{props.currency} {props.currencySymbol}</td>
       <td className="px-4 py-2 text-right">{props.productsCount}</td>
       <td className="px-4 py-2 text-right">

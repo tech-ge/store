@@ -1,35 +1,52 @@
+import { loadEnv } from '../load-env'
+loadEnv()
+
 import { connectMongo, CountryCurrency, Store } from '../../packages/db-mongo/src'
 
-const DATA = [
-  { countryCode: 'KE', countryName: 'Kenya',          dialCode: '+254', currency: 'KES', currencySymbol: 'KSh' },
-  { countryCode: 'NG', countryName: 'Nigeria',        dialCode: '+234', currency: 'NGN', currencySymbol: 'NGN' },
-  { countryCode: 'ZA', countryName: 'South Africa',   dialCode: '+27',  currency: 'ZAR', currencySymbol: 'R' },
-  { countryCode: 'EG', countryName: 'Egypt',          dialCode: '+20',  currency: 'EGP', currencySymbol: 'E' },
-  { countryCode: 'GH', countryName: 'Ghana',          dialCode: '+233', currency: 'GHS', currencySymbol: 'GHS' },
-  { countryCode: 'UG', countryName: 'Uganda',         dialCode: '+256', currency: 'UGX', currencySymbol: 'USh' },
-  { countryCode: 'TZ', countryName: 'Tanzania',       dialCode: '+255', currency: 'TZS', currencySymbol: 'TSh' },
-  { countryCode: 'US', countryName: 'United States',  dialCode: '+1',   currency: 'USD', currencySymbol: '$' },
-  { countryCode: 'GB', countryName: 'United Kingdom', dialCode: '+44',  currency: 'GBP', currencySymbol: 'GBP' },
-  { countryCode: 'IN', countryName: 'India',          dialCode: '+91',  currency: 'INR', currencySymbol: 'INR' },
-  { countryCode: 'BR', countryName: 'Brazil',         dialCode: '+55',  currency: 'BRL', currencySymbol: 'R$' }
+interface CountrySeed {
+  countryCode: string
+  countryName: string
+  storeName: string
+  dialCode: string
+  currency: string
+  currencySymbol: string
+}
+
+const DATA: CountrySeed[] = [
+  { countryCode: 'KE', countryName: 'Kenya',          storeName: 'Kenyan Store',          dialCode: '+254', currency: 'KES', currencySymbol: 'KSh' },
+  { countryCode: 'NG', countryName: 'Nigeria',        storeName: 'Nigerian Store',        dialCode: '+234', currency: 'NGN', currencySymbol: 'NGN' },
+  { countryCode: 'ZA', countryName: 'South Africa',   storeName: 'South African Store',   dialCode: '+27',  currency: 'ZAR', currencySymbol: 'R' },
+  { countryCode: 'EG', countryName: 'Egypt',          storeName: 'Egyptian Store',        dialCode: '+20',  currency: 'EGP', currencySymbol: 'E' },
+  { countryCode: 'GH', countryName: 'Ghana',          storeName: 'Ghanaian Store',        dialCode: '+233', currency: 'GHS', currencySymbol: 'GHS' },
+  { countryCode: 'UG', countryName: 'Uganda',         storeName: 'Ugandan Store',         dialCode: '+256', currency: 'UGX', currencySymbol: 'USh' },
+  { countryCode: 'TZ', countryName: 'Tanzania',       storeName: 'Tanzanian Store',       dialCode: '+255', currency: 'TZS', currencySymbol: 'TSh' },
+  { countryCode: 'US', countryName: 'United States',  storeName: 'American Store',        dialCode: '+1',   currency: 'USD', currencySymbol: '$' },
+  { countryCode: 'GB', countryName: 'United Kingdom', storeName: 'British Store',         dialCode: '+44',  currency: 'GBP', currencySymbol: 'GBP' },
+  { countryCode: 'IN', countryName: 'India',          storeName: 'Indian Store',          dialCode: '+91',  currency: 'INR', currencySymbol: 'INR' },
+  { countryCode: 'BR', countryName: 'Brazil',         storeName: 'Brazilian Store',       dialCode: '+55',  currency: 'BRL', currencySymbol: 'R$' }
 ]
 
 export async function seedCountries() {
   await connectMongo()
+
   for (const c of DATA) {
     await CountryCurrency.updateOne(
       { countryCode: c.countryCode },
       { $setOnInsert: { ...c, isActive: true } },
       { upsert: true }
     )
+
     await Store.updateOne(
       { countryCode: c.countryCode },
       {
+        $set: {
+          countryName: c.countryName,
+          storeName: c.storeName,
+          currency: c.currency,
+          currencySymbol: c.currencySymbol
+        },
         $setOnInsert: {
           countryCode: c.countryCode,
-          countryName: c.countryName,
-          currency: c.currency,
-          currencySymbol: c.currencySymbol,
           cities: [],
           shippingBaseRateUsd: 5,
           isActive: true
@@ -38,6 +55,7 @@ export async function seedCountries() {
       { upsert: true }
     )
   }
+
   console.log('countries + stores seeded:', DATA.length)
 }
 

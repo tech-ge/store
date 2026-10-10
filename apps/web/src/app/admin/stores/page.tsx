@@ -7,6 +7,7 @@ interface StoreLean {
   _id: unknown
   countryCode: string
   countryName: string
+  storeName: string
   currency: string
   currencySymbol: string
   shippingBaseRateUsd: number
@@ -22,11 +23,13 @@ export default async function AdminStores() {
   return (
     <div>
       <h1 className="font-display text-2xl text-navy mb-1">Stores</h1>
-      <p className="text-sm text-text-muted mb-4">One store per country. Edit base shipping and toggle active.</p>
-      <div className="bg-white rounded-xl border border-surface-border overflow-hidden">
+      <p className="text-sm text-text-muted mb-4">One store per country. Kenya store is the Kenyan Store, Nigeria is the Nigerian Store, and so on.</p>
+
+      <div className="bg-white rounded-xl border border-surface-border overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-surface-muted text-text-muted">
             <tr>
+              <th className="text-left px-4 py-2">Store</th>
               <th className="text-left px-4 py-2">Country</th>
               <th className="text-left px-4 py-2">Currency</th>
               <th className="text-right px-4 py-2">Products</th>
@@ -41,6 +44,7 @@ export default async function AdminStores() {
                 key={String(s._id)}
                 countryCode={s.countryCode}
                 countryName={s.countryName}
+                storeName={s.storeName}
                 currency={s.currency}
                 currencySymbol={s.currencySymbol}
                 productsCount={countMap.get(String(s._id)) || 0}

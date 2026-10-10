@@ -1,3 +1,6 @@
+import { loadEnv } from '../load-env'
+loadEnv()
+
 import { connectMongo, Category } from '../../packages/db-mongo/src'
 
 const DATA = [

@@ -1,3 +1,6 @@
+import { loadEnv } from '../load-env'
+loadEnv()
+
 import { applyUserIndexes } from './users.indexes'
 import { applyProductIndexes } from './products.indexes'
 import { applyOrderIndexes } from './orders.indexes'
