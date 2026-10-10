@@ -10,6 +10,8 @@ interface KycLean {
   idNumberNormalized: string
   idPhotoUrl: string
   countryCode: string
+  status: string
+  submittedAt: Date
 }
 
 interface UserLean {
@@ -18,6 +20,7 @@ interface UserLean {
   emailNormalized: string
   phone: string
   countryCode: string
+  status: string
 }
 
 export default async function KycReview({ params }: { params: { userId: string } }) {
@@ -35,13 +38,15 @@ export default async function KycReview({ params }: { params: { userId: string }
           <Row label="Email" value={user.emailNormalized} />
           <Row label="Phone" value={user.phone} />
           <Row label="Country" value={user.countryCode} />
+          <Row label="Status" value={user.status} />
           <Row label="ID number" value={kyc.idNumberNormalized} />
+          <Row label="KYC status" value={kyc.status} />
         </dl>
       </div>
       <div className="bg-white rounded-xl border border-surface-border p-4">
         <h2 className="font-display text-xl text-navy mb-3">ID photo</h2>
         <img src={kyc.idPhotoUrl} alt="ID" className="w-full rounded-lg border border-surface-border" />
-        <KycActions userId={params.userId} />
+        {kyc.status === 'pending' && <KycActions userId={params.userId} />}
       </div>
     </div>
   )
