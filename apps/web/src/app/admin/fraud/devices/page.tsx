@@ -1,5 +1,5 @@
 import { connectMongo, Device } from '@dd/db-mongo'
-import { DeviceBlockButton } from '@/components/admin/DeviceBlockButton'
+import { DeviceActions } from '@/components/admin/RowActions'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,7 +9,6 @@ interface DeviceRow {
   ip?: string
   userAgent?: string
   isBlocked: boolean
-  blockReason?: string
   lastSeen?: Date
 }
 
@@ -29,7 +28,7 @@ export default async function AdminDevices() {
               <th className="text-left px-4 py-2">UA</th>
               <th className="text-left px-4 py-2">Last seen</th>
               <th className="text-left px-4 py-2">Status</th>
-              <th className="text-right px-4 py-2">Action</th>
+              <th className="text-right px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -44,8 +43,8 @@ export default async function AdminDevices() {
                     {d.isBlocked ? 'blocked' : 'ok'}
                   </span>
                 </td>
-                <td className="px-4 py-2 text-right">
-                  {!d.isBlocked && <DeviceBlockButton fingerprint={d.fingerprint} />}
+                <td className="px-4 py-2">
+                  <DeviceActions fingerprint={d.fingerprint} isBlocked={d.isBlocked} />
                 </td>
               </tr>
             ))}

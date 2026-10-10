@@ -1,4 +1,5 @@
 import { connectMongo, LoginAttempt } from '@dd/db-mongo'
+import { IpActions } from '@/components/admin/RowActions'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,6 +31,7 @@ export default async function AdminIps() {
               <th className="text-left px-4 py-2">Last email</th>
               <th className="text-left px-4 py-2">Reasons</th>
               <th className="text-left px-4 py-2">Last attempt</th>
+              <th className="text-right px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -40,10 +42,11 @@ export default async function AdminIps() {
                 <td className="px-4 py-2 text-text-muted">{r.lastEmail || '—'}</td>
                 <td className="px-4 py-2 text-text-muted">{(r.reasons || []).join(', ')}</td>
                 <td className="px-4 py-2 text-text-muted">{r.lastAt ? new Date(r.lastAt).toLocaleString() : '—'}</td>
+                <td className="px-4 py-2"><IpActions ip={r._id} /></td>
               </tr>
             ))}
             {rows.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-6 text-center text-text-muted">No failed logins.</td></tr>
+              <tr><td colSpan={6} className="px-4 py-6 text-center text-text-muted">No failed logins.</td></tr>
             )}
           </tbody>
         </table>
