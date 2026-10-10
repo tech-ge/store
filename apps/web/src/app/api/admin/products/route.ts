@@ -12,17 +12,17 @@ export async function POST(req: Request) {
     requireRole(payload, 'admin')
 
     const body = await req.json()
-    const { title, description, images, categorySlug, storeCountry, priceUsd, stock, isGlobal } = body
+    const { title, description, images, categorySlug, storeId, storeCountry, priceUsd, stock, isGlobal } = body
 
     if (!title || !description || !Array.isArray(images) || !images.length || !categorySlug || !storeCountry || typeof priceUsd !== 'number') {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     await connectMongo()
-    const store = await Store.findOne({ countryCode: storeCountry.toUpperCase() }).lean()
+    const store = await Store.findOne({ countryCode: String(storeCountry).toUpperCase() }).lean()
     if (!store) return NextResponse.json({ error: 'Store not found' }, { status: 404 })
 
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 80)
+    const slug = String(title).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 80)
 
     const product = await Product.create({
       title,
@@ -41,6 +41,7 @@ export async function POST(req: Request) {
     const prev = await AuditLog.findOne().sort({ createdAt: -1 }).lean<AuditLean | null>()
     const auditBody = JSON.stringify({ title, storeCountry })
     const hash = crypto.createHash('sha256').update((prev?.hash || '') + auditBody).digest('hex')
+
     await AuditLog.create({
       actorId: payload.sub, actorRole: 'admin', action: 'create_product',
       resource: 'product', resourceId: String(product._id),

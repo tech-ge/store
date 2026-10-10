@@ -25,6 +25,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <NavLink href="/admin/products">Products</NavLink>
             <NavLink href="/admin/products/new">Add product</NavLink>
             <NavLink href="/admin/orders">Orders</NavLink>
+            <NavLink href="/admin/transactions">Transactions</NavLink>
             <NavLink href="/admin/fraud/devices">Fraud · Devices</NavLink>
             <NavLink href="/admin/fraud/ips">Fraud · IPs</NavLink>
             <NavLink href="/admin/logs">Audit logs</NavLink>

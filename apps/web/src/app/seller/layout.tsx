@@ -20,6 +20,7 @@ export default function SellerLayout({ children }: { children: React.ReactNode }
             <NavLink href="/seller">Overview</NavLink>
             <NavLink href="/seller/products">My products</NavLink>
             <NavLink href="/seller/products/new">Add product</NavLink>
+            <NavLink href="/seller/enquiries">Enquiries</NavLink>
             <NavLink href="/seller/fees">Fee history</NavLink>
           </nav>
         </aside>

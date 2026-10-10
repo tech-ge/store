@@ -31,3 +31,5 @@ export { Receipt } from './models/Receipt'
 export { AuditLog } from './models/AuditLog'
 export { FraudEvent } from './models/FraudEvent'
 export { Notification } from './models/Notification'
+
+export { Enquiry } from "./models/Enquiry"

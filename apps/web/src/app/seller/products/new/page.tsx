@@ -3,14 +3,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import { authJson } from '@/lib/auth-fetch'
 
 interface Category { slug: string; name: string }
 interface StoreOpt { countryCode: string; countryName: string }
-
-async function readJson(res: Response) {
-  const t = await res.text()
-  try { return JSON.parse(t) } catch { return { error: t.slice(0, 200) } }
-}
 
 export default function SellerNewProduct() {
   const router = useRouter()
@@ -39,26 +35,26 @@ export default function SellerNewProduct() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const token = localStorage.getItem('accessToken')
-
-    const res = await fetch('/api/seller/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({
-        title: form.title,
-        description: form.description,
-        images: [form.image],
-        categorySlug: form.categorySlug,
-        storeCountry: form.storeCountry,
-        priceUsd: Number(form.priceUsd),
-        stock: Number(form.stock)
+    try {
+      await authJson('/api/seller/products', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: form.title,
+          description: form.description,
+          images: [form.image],
+          categorySlug: form.categorySlug,
+          storeCountry: form.storeCountry,
+          priceUsd: Number(form.priceUsd),
+          stock: Number(form.stock)
+        })
       })
-    })
-    const data = await readJson(res)
-    setLoading(false)
-    if (!res.ok) return setError(data.error || 'Failed')
-    router.push('/seller/products')
-    router.refresh()
+      router.push('/seller/products')
+      router.refresh()
+    } catch (err: any) {
+      setError(err.message || 'Failed')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -67,13 +63,8 @@ export default function SellerNewProduct() {
       <p className="text-sm text-text-muted mb-6">5% of every sale goes to Door Delivery.</p>
       <form onSubmit={onSubmit} className="space-y-3">
         <Input placeholder="Title" value={form.title} onChange={e => upd('title', e.target.value)} required />
-        <textarea
-          placeholder="Description"
-          value={form.description}
-          onChange={e => upd('description', e.target.value)}
-          required
-          className="w-full px-3 py-2.5 rounded-xl border border-surface-border bg-white outline-none focus:border-brand h-32"
-        />
+        <textarea placeholder="Description" value={form.description} onChange={e => upd('description', e.target.value)} required
+          className="w-full px-3 py-2.5 rounded-xl border border-surface-border bg-white outline-none focus:border-brand h-32" />
         <Input placeholder="Image URL" value={form.image} onChange={e => upd('image', e.target.value)} required />
 
         <div className="grid grid-cols-2 gap-3">
@@ -82,7 +73,6 @@ export default function SellerNewProduct() {
             <option value="">Category</option>
             {cats.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
           </select>
-
           <select value={form.storeCountry} onChange={e => upd('storeCountry', e.target.value)} required
             className="px-3 py-2.5 rounded-xl border border-surface-border bg-white text-sm">
             <option value="">Country store</option>
@@ -96,9 +86,7 @@ export default function SellerNewProduct() {
         </div>
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Creating…' : 'Create product'}
-        </Button>
+        <Button type="submit" disabled={loading} className="w-full">{loading ? 'Creating…' : 'Create product'}</Button>
       </form>
     </div>
   )
