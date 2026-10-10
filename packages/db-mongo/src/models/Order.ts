@@ -9,6 +9,8 @@ export interface IOrderItem {
   currencyLocal: string
   titleSnapshot: string
   imageSnapshot: string
+  sellerStatus: 'pending' | 'confirmed' | 'completed'
+  sellerCompletedAt?: Date
 }
 
 export interface IOrder {
@@ -34,8 +36,8 @@ export interface IOrder {
   status:
     | 'pending_payment'
     | 'paid_20'
-    | 'assigned_driver'
-    | 'out_for_delivery'
+    | 'seller_confirmed'
+    | 'completed'
     | 'delivered'
     | 'cancelled'
     | 'refunded'
@@ -51,13 +53,15 @@ const OrderSchema = new Schema<IOrder>({
   storeId: { type: Schema.Types.ObjectId, ref: 'Store', required: true, index: true },
   items: [{
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-    sellerId: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+    sellerId: { type: Schema.Types.ObjectId, ref: 'User', default: null, index: true },
     qty: { type: Number, required: true },
     priceUsd: { type: Number, required: true },
     priceLocal: { type: Number, required: true },
     currencyLocal: { type: String, required: true },
     titleSnapshot: String,
     imageSnapshot: String,
+    sellerStatus: { type: String, enum: ['pending', 'confirmed', 'completed'], default: 'pending', index: true },
+    sellerCompletedAt: Date,
     _id: false
   }],
   pricing: {
@@ -77,15 +81,7 @@ const OrderSchema = new Schema<IOrder>({
   fxLockedAt: { type: Date, required: true },
   status: {
     type: String,
-    enum: [
-      'pending_payment',
-      'paid_20',
-      'assigned_driver',
-      'out_for_delivery',
-      'delivered',
-      'cancelled',
-      'refunded'
-    ],
+    enum: ['pending_payment', 'paid_20', 'seller_confirmed', 'completed', 'delivered', 'cancelled', 'refunded'],
     default: 'pending_payment',
     index: true
   },
@@ -95,5 +91,6 @@ const OrderSchema = new Schema<IOrder>({
 }, { timestamps: true })
 
 OrderSchema.index({ userId: 1, createdAt: -1 })
+OrderSchema.index({ 'items.sellerId': 1, status: 1, createdAt: -1 })
 
 export const Order = models.Order || model<IOrder>('Order', OrderSchema)

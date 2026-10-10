@@ -7,16 +7,16 @@ export async function GET(req: Request) {
   const url = new URL(req.url)
   const q = url.searchParams.get('q')?.trim() || ''
   const category = url.searchParams.get('category') || ''
-  const scope = url.searchParams.get('scope') || 'all' // all | local | global
+  const scope = url.searchParams.get('scope') || 'all'
   const minPrice = Number(url.searchParams.get('minPrice') || 0)
   const maxPrice = Number(url.searchParams.get('maxPrice') || 0)
-  const sort = url.searchParams.get('sort') || 'newest' // newest | oldest | priceAsc | priceDesc
+  const sort = url.searchParams.get('sort') || 'newest'
   const country = (url.searchParams.get('country') || '').toUpperCase()
   const limit = Math.min(Number(url.searchParams.get('limit') || 60), 100)
 
   await connectMongo()
 
-  const filter: any = {}
+  const filter: any = { stock: { $gt: 0 } }
   if (q) filter.title = new RegExp(q, 'i')
   if (category) filter.categorySlug = category
   if (scope === 'local') filter.isGlobal = false
@@ -27,7 +27,6 @@ export async function GET(req: Request) {
     if (maxPrice) filter.priceUsd.$lte = maxPrice
   }
 
-  // Country scope: local products only visible in their own store
   let storeId: any = null
   let importMarkupPercent = 15
   if (country) {
@@ -39,10 +38,7 @@ export async function GET(req: Request) {
   }
 
   if (storeId) {
-    filter.$or = [
-      { storeId },
-      { isGlobal: true }
-    ]
+    filter.$or = [{ storeId }, { isGlobal: true }]
   }
 
   const sortMap: Record<string, any> = {
@@ -61,13 +57,12 @@ export async function GET(req: Request) {
       title: p.title,
       image: p.images?.[0] || '/placeholder.svg',
       priceUsd: p.priceUsd,
-      displayPriceUsd: p.isGlobal
-        ? +(p.priceUsd * (1 + importMarkupPercent / 100)).toFixed(2)
-        : p.priceUsd,
+      displayPriceUsd: p.isGlobal ? +(p.priceUsd * (1 + importMarkupPercent / 100)).toFixed(2) : p.priceUsd,
       categorySlug: p.categorySlug,
       storeId: String(p.storeId),
       sellerId: p.sellerId ? String(p.sellerId) : null,
       isGlobal: !!p.isGlobal,
+      stock: p.stock,
       createdAt: p.createdAt
     }))
   })

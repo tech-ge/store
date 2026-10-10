@@ -20,12 +20,7 @@ export async function POST(req: Request) {
     const seller = await Seller.findOneAndUpdate(
       { userId: payload.sub },
       {
-        $set: {
-          businessName,
-          countryCode: countryCode.toUpperCase(),
-          payoutMethod,
-          payoutDetails
-        },
+        $set: { businessName, countryCode: countryCode.toUpperCase(), payoutMethod, payoutDetails },
         $setOnInsert: { kycStatus: 'pending', commissionRate: 0.05 }
       },
       { upsert: true, new: true }
@@ -34,8 +29,8 @@ export async function POST(req: Request) {
     await User.updateOne({ _id: payload.sub }, { $set: { role: 'seller' } })
 
     const prev = await AuditLog.findOne().sort({ createdAt: -1 }).lean<AuditLean | null>()
-    const auditBody = JSON.stringify({ userId: payload.sub, businessName })
-    const hash = crypto.createHash('sha256').update((prev?.hash || '') + auditBody).digest('hex')
+    const body2 = JSON.stringify({ userId: payload.sub, businessName })
+    const hash = crypto.createHash('sha256').update((prev?.hash || '') + body2).digest('hex')
 
     await AuditLog.create({
       actorId: payload.sub, actorRole: 'seller', action: 'seller_register',
@@ -43,7 +38,7 @@ export async function POST(req: Request) {
       payload: { businessName, countryCode }, hash, prevHash: prev?.hash
     })
 
-    return NextResponse.json({ seller })
+    return NextResponse.json({ seller, role: 'seller' })
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: e.status || 401 })
   }

@@ -5,36 +5,19 @@ import { ProductGrid } from '@/components/product/ProductGrid'
 
 export const dynamic = 'force-dynamic'
 
-interface StoreLean {
-  _id: unknown
-  countryCode: string
-  countryName: string
-  storeName: string
-  currency: string
-}
-
-interface ProductLean {
-  _id: unknown
-  title: string
-  images?: string[]
-  priceUsd: number
-  storeId: unknown
-  sellerId?: unknown | null
-  categorySlug: string
-}
-
 export default async function StorePage({ params }: { params: { country: string } }) {
   await connectMongo()
-  const store = await Store.findOne({ countryCode: params.country.toUpperCase() }).lean<StoreLean | null>()
+  const store: any = await Store.findOne({ countryCode: params.country.toUpperCase() }).lean()
   if (!store) notFound()
 
-  const products = await Product.find({ storeId: store._id }).limit(60).lean<ProductLean[]>()
+  const products = await Product.find({ storeId: store._id, stock: { $gt: 0 } })
+    .sort({ createdAt: -1 }).limit(60).lean()
 
   return (
     <Container className="py-10">
-      <h1 className="font-display text-3xl text-navy mb-1">{store.storeName}</h1>
+      <h1 className="font-display text-3xl text-navy mb-1">{store.storeName || `${store.countryName} Store`}</h1>
       <p className="text-sm text-text-muted mb-6">Country: {store.countryName} · Currency: {store.currency}</p>
-      <ProductGrid products={products.map(p => ({
+      <ProductGrid products={products.map((p: any) => ({
         id: String(p._id),
         title: p.title,
         image: p.images?.[0] || '/placeholder.svg',
