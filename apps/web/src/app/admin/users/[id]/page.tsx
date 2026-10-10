@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { connectMongo, User, KycRecord, Wallet, Transaction, Seller } from '@dd/db-mongo'
+import { connectMongo, User, Wallet, Transaction, Seller } from '@dd/db-mongo'
 import { UserActions, WithdrawButton } from '@/components/admin/RowActions'
 
 export const dynamic = 'force-dynamic'
@@ -15,14 +15,6 @@ interface UserLean {
   role: string
   status: string
   createdAt: Date
-}
-
-interface KycLean {
-  _id: unknown
-  idNumberNormalized: string
-  idPhotoUrl: string
-  status: string
-  submittedAt: Date
 }
 
 interface WalletLean {
@@ -53,8 +45,7 @@ export default async function AdminUserDetail({ params }: { params: { id: string
   const user = await User.findById(params.id).lean<UserLean | null>().catch(() => null)
   if (!user) notFound()
 
-  const [kyc, wallet, txns, seller] = await Promise.all([
-    KycRecord.findOne({ userId: user._id }).lean<KycLean | null>(),
+  const [wallet, txns, seller] = await Promise.all([
     Wallet.findOne({ userId: user._id }).lean<WalletLean | null>(),
     Transaction.find({ userId: user._id }).sort({ createdAt: -1 }).limit(100).lean<TransactionLean[]>(),
     Seller.findOne({ userId: user._id }).lean<SellerLean | null>()
@@ -77,42 +68,20 @@ export default async function AdminUserDetail({ params }: { params: { id: string
         <Link href="/admin/users" className="text-sm text-brand">Back to users</Link>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <section className="bg-white rounded-xl border border-surface-border p-4">
-          <h2 className="font-display text-lg text-navy mb-3">Profile</h2>
-          <dl className="text-sm space-y-2">
-            <Row label="Email" value={user.emailNormalized} />
-            <Row label="Phone" value={`${user.dialCode} ${user.phone}`} />
-            <Row label="Country" value={user.countryCode} />
-            <Row label="Role" value={user.role} />
-            <Row label="Status" value={user.status} />
-            <Row label="Created" value={new Date(user.createdAt).toLocaleString()} />
-          </dl>
-          <div className="mt-4">
-            <UserActions userId={String(user._id)} status={user.status} />
-          </div>
-        </section>
-
-        <section className="bg-white rounded-xl border border-surface-border p-4">
-          <h2 className="font-display text-lg text-navy mb-3">ID verification</h2>
-          {kyc ? (
-            <>
-              <div className="text-sm space-y-2 mb-3">
-                <Row label="ID number" value={kyc.idNumberNormalized} />
-                <Row label="KYC status" value={kyc.status} />
-                <Row label="Submitted" value={new Date(kyc.submittedAt).toLocaleString()} />
-              </div>
-              <img
-                src={kyc.idPhotoUrl}
-                alt="ID"
-                className="w-full rounded-lg border border-surface-border max-h-96 object-contain bg-surface-muted"
-              />
-            </>
-          ) : (
-            <p className="text-sm text-text-muted">No KYC record.</p>
-          )}
-        </section>
-      </div>
+      <section className="bg-white rounded-xl border border-surface-border p-4">
+        <h2 className="font-display text-lg text-navy mb-3">Account</h2>
+        <dl className="text-sm space-y-2">
+          <Row label="Email" value={user.emailNormalized} />
+          <Row label="Phone" value={`${user.dialCode} ${user.phone}`} />
+          <Row label="Country" value={user.countryCode} />
+          <Row label="Role" value={user.role} />
+          <Row label="Status" value={user.status} />
+          <Row label="Created" value={new Date(user.createdAt).toLocaleString()} />
+        </dl>
+        <div className="mt-4">
+          <UserActions userId={String(user._id)} status={user.status} />
+        </div>
+      </section>
 
       <section className="bg-white rounded-xl border border-surface-border p-4">
         <h2 className="font-display text-lg text-navy mb-3">Balance</h2>
@@ -156,7 +125,6 @@ export default async function AdminUserDetail({ params }: { params: { id: string
               <tr>
                 <th className="text-left py-2">Time</th>
                 <th className="text-left py-2">Type</th>
-                <th className="text-left py-2">Method</th>
                 <th className="text-left py-2">Provider</th>
                 <th className="text-right py-2">Amount</th>
                 <th className="text-right py-2">USD</th>
@@ -168,17 +136,14 @@ export default async function AdminUserDetail({ params }: { params: { id: string
                 <tr key={String(t._id)} className="border-t border-surface-border">
                   <td className="py-2 text-text-muted">{new Date(t.createdAt).toLocaleString()}</td>
                   <td className="py-2">{t.type}</td>
-                  <td className="py-2">{t.method}</td>
                   <td className="py-2 text-text-muted">{t.provider}</td>
                   <td className="py-2 text-right">{t.amount} {t.currency}</td>
                   <td className="py-2 text-right">${(t.amountUsd || 0).toFixed(2)}</td>
-                  <td className="py-2">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-surface-muted">{t.status}</span>
-                  </td>
+                  <td className="py-2"><span className="text-xs px-2 py-0.5 rounded-full bg-surface-muted">{t.status}</span></td>
                 </tr>
               ))}
               {txns.length === 0 && (
-                <tr><td colSpan={7} className="py-6 text-center text-text-muted">No transactions yet.</td></tr>
+                <tr><td colSpan={6} className="py-6 text-center text-text-muted">No transactions yet.</td></tr>
               )}
             </tbody>
           </table>

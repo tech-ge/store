@@ -28,16 +28,18 @@ export default async function KycQueue({ searchParams }: { searchParams: { statu
   const users = await User.find({ _id: { $in: rows.map(r => r.userId) } }).lean<UserLean[]>()
   const userMap = new Map(users.map(u => [String(u._id), u]))
 
+  const pendingCount = await KycRecord.countDocuments({ status: 'pending' })
+
   return (
     <div>
-      <h1 className="font-display text-2xl text-navy mb-4">KYC queue</h1>
+      <h1 className="font-display text-2xl text-navy mb-4">KYC verification ({pendingCount} pending)</h1>
 
       <div className="flex flex-wrap gap-2 mb-4 text-sm">
-        {['pending', 'approved', 'rejected', 'all'].map(s => (
+        {['pending', 'rejected', 'approved', 'all'].map(s => (
           <Link
             key={s}
             href={`/admin/kyc?status=${s}`}
-            className={`px-3 py-1.5 rounded-lg border ${status === s ? 'bg-brand text-white border-brand' : 'bg-white border-surface-border'}`}
+            className={`px-3 py-1.5 rounded-lg border capitalize ${status === s ? 'bg-brand text-white border-brand' : 'bg-white border-surface-border'}`}
           >
             {s}
           </Link>
@@ -73,13 +75,15 @@ export default async function KycQueue({ searchParams }: { searchParams: { statu
                     }`}>{r.status}</span>
                   </td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/admin/users/${String(r.userId)}`} className="text-brand text-xs">Review</Link>
+                    <Link href={`/admin/users/${String(r.userId)}`} className="text-brand text-xs">Open</Link>
                   </td>
                 </tr>
               )
             })}
             {rows.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-6 text-center text-text-muted">No records.</td></tr>
+              <tr><td colSpan={6} className="px-4 py-6 text-center text-text-muted">
+                {status === 'pending' ? 'No pending verifications.' : 'No records.'}
+              </td></tr>
             )}
           </tbody>
         </table>

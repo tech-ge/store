@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic'
 
 interface KycLean {
   _id: unknown
-  userId: unknown
   idNumberNormalized: string
   idPhotoUrl: string
   countryCode: string
@@ -18,8 +17,6 @@ interface UserLean {
   _id: unknown
   fullName: string
   emailNormalized: string
-  phone: string
-  countryCode: string
   status: string
 }
 
@@ -32,16 +29,15 @@ export default async function KycReview({ params }: { params: { userId: string }
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="bg-white rounded-xl border border-surface-border p-4">
-        <h2 className="font-display text-xl text-navy mb-3">User details</h2>
-        <dl className="text-sm space-y-2">
+        <h2 className="font-display text-xl text-navy mb-3">Applicant</h2>
+        <div className="text-sm space-y-2">
           <Row label="Name" value={user.fullName} />
           <Row label="Email" value={user.emailNormalized} />
-          <Row label="Phone" value={user.phone} />
-          <Row label="Country" value={user.countryCode} />
-          <Row label="Status" value={user.status} />
+          <Row label="Country" value={kyc.countryCode} />
           <Row label="ID number" value={kyc.idNumberNormalized} />
-          <Row label="KYC status" value={kyc.status} />
-        </dl>
+          <Row label="Submitted" value={new Date(kyc.submittedAt).toLocaleString()} />
+          <Row label="Status" value={kyc.status} />
+        </div>
       </div>
       <div className="bg-white rounded-xl border border-surface-border p-4">
         <h2 className="font-display text-xl text-navy mb-3">ID photo</h2>
