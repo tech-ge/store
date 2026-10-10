@@ -35,10 +35,15 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <Link
       href={`/products/${product.id}`}
-      className="group block bg-white rounded-xl border border-surface-border hover:shadow-lift transition overflow-hidden"
+      className="group block bg-white rounded-2xl border border-surface-border hover:shadow-lift transition overflow-hidden"
     >
       <div className="relative aspect-square bg-surface-muted">
-        <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition" loading="lazy" />
+        <img
+          src={product.image || '/placeholder.svg'}
+          alt={product.title}
+          className="w-full h-full object-cover group-hover:scale-[1.04] transition duration-300"
+          loading="lazy"
+        />
         <div className="absolute top-3 right-3">
           <FavoriteButton product={{
             productId: product.id,
@@ -49,11 +54,17 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           }} />
         </div>
       </div>
-      <div className="p-3">
-        <h3 className="text-sm font-medium text-navy line-clamp-2 min-h-[2.5rem]">{product.title}</h3>
-        <div className="mt-2 flex items-center justify-between">
-          <Price usd={product.priceUsd} className="text-sm" />
-          <button onClick={addToCart} className="px-3 py-1.5 rounded-lg bg-brand text-white text-xs font-medium">Add</button>
+
+      <div className="p-4">
+        <h3 className="text-base font-medium text-navy line-clamp-2 min-h-[3rem]">{product.title}</h3>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <Price usd={product.priceUsd} className="text-lg" />
+          <button
+            onClick={addToCart}
+            className="px-4 py-2 rounded-xl bg-brand text-white text-sm font-medium hover:bg-brand-500 transition shrink-0"
+          >
+            Add
+          </button>
         </div>
       </div>
     </Link>

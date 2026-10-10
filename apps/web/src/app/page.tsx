@@ -35,7 +35,7 @@ export default async function HomePage() {
 
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-xl text-navy">Categories</h2>
+            <h2 className="font-display text-2xl text-navy">Categories</h2>
             <Link href="/categories" className="text-sm text-brand">All categories</Link>
           </div>
           <CategoryGrid categories={categories.map(c => ({ slug: c.slug, name: c.name }))} />
@@ -43,7 +43,7 @@ export default async function HomePage() {
 
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-xl text-navy">New arrivals</h2>
+            <h2 className="font-display text-2xl text-navy">New arrivals</h2>
           </div>
           <ProductGrid products={products.map(p => ({
             id: String(p._id),
@@ -57,7 +57,7 @@ export default async function HomePage() {
         </section>
 
         <section>
-          <h2 className="font-display text-xl text-navy mb-4">Available stores</h2>
+          <h2 className="font-display text-2xl text-navy mb-4">Available stores</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {stores.map(s => (
               <Link key={String(s._id)} href={`/stores/${s.countryCode}`} className="bg-white rounded-xl border border-surface-border p-4 hover:border-brand">

@@ -33,13 +33,14 @@ export default function LoginPage() {
     const data = await readJson(res)
     setLoading(false)
 
-    if (!res.ok) {
-      setError(data.error || 'Login failed')
-      return
-    }
+    if (!res.ok) { setError(data.error || 'Login failed'); return }
 
     localStorage.setItem('accessToken', data.accessToken)
-    router.push(data.user?.role === 'admin' ? '/admin' : '/')
+
+    const role = data.user?.role
+    if (role === 'admin') router.push('/admin')
+    else if (role === 'seller') router.push('/seller')
+    else router.push('/')
     router.refresh()
   }
 
@@ -47,33 +48,11 @@ export default function LoginPage() {
     <Container className="max-w-md py-12">
       <h1 className="font-display text-2xl text-navy mb-6">Login</h1>
       <form onSubmit={onSubmit} className="space-y-3">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-          autoComplete="email"
-        />
-        <Input
-          type="text"
-          placeholder="ID Number"
-          value={idNumber}
-          onChange={e => setIdNumber(e.target.value)}
-          required
-          autoComplete="off"
-        />
-        <PasswordInput
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-          autoComplete="current-password"
-        />
+        <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" />
+        <Input type="text" placeholder="ID Number" value={idNumber} onChange={e => setIdNumber(e.target.value)} required autoComplete="off" />
+        <PasswordInput placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password" />
         {error && <p className="text-red-600 text-sm">{error}</p>}
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Logging in…' : 'Login'}
-        </Button>
+        <Button type="submit" disabled={loading} className="w-full">{loading ? 'Logging in…' : 'Login'}</Button>
       </form>
       <div className="mt-4 text-sm text-text-muted">
         <a href="/forgot-password" className="text-brand">Forgot password?</a>

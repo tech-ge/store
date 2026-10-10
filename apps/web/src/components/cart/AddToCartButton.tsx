@@ -6,7 +6,7 @@ export function AddToCartButton({ product }: { product: Parameters<ReturnType<ty
   return (
     <button
       onClick={() => add(product)}
-      className="px-5 py-2.5 rounded-xl bg-brand text-white text-sm font-medium"
+      className="px-8 py-3.5 rounded-xl bg-brand text-white text-base font-semibold hover:bg-brand-500 transition"
     >
       Add to cart
     </button>
