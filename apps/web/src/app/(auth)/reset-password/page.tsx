@@ -2,8 +2,13 @@
 import { Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Container } from '@/components/layout/Container'
-import { Input } from '@/components/ui/Input'
+import { PasswordInput } from '@/components/ui/PasswordInput'
 import { Button } from '@/components/ui/Button'
+
+async function readJson(res: Response) {
+  const text = await res.text()
+  try { return JSON.parse(text) } catch { return { error: text.slice(0, 200) || res.statusText } }
+}
 
 function ResetForm() {
   const params = useSearchParams()
@@ -18,12 +23,19 @@ function ResetForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, newPassword: pw })
     })
-    setMsg(res.ok ? 'Password reset. You can now log in.' : 'Reset failed.')
+    const data = await readJson(res)
+    setMsg(res.ok ? 'Password reset. You can now log in.' : (data.error || 'Reset failed.'))
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <Input type="password" placeholder="New password" value={pw} onChange={e => setPw(e.target.value)} required />
+      <PasswordInput
+        placeholder="New password"
+        value={pw}
+        onChange={e => setPw(e.target.value)}
+        minLength={8}
+        required
+      />
       <Button type="submit" className="w-full">Reset</Button>
       {msg && <p className="text-sm text-text-muted mt-2">{msg}</p>}
     </form>

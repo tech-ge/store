@@ -3,8 +3,14 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Container } from '@/components/layout/Container'
 import { Input } from '@/components/ui/Input'
+import { PasswordInput } from '@/components/ui/PasswordInput'
 import { Button } from '@/components/ui/Button'
 import { COUNTRIES, findCountry } from '@/lib/data/countries'
+
+async function readJson(res: Response) {
+  const text = await res.text()
+  try { return JSON.parse(text) } catch { return { error: text.slice(0, 200) || res.statusText } }
+}
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -35,8 +41,8 @@ export default function RegisterPage() {
     const fd = new FormData()
     fd.append('file', file)
     const res = await fetch('/api/kyc/upload-public', { method: 'POST', body: fd })
-    if (!res.ok) throw new Error('Photo upload failed')
-    const data = await res.json()
+    const data = await readJson(res)
+    if (!res.ok) throw new Error(data.error || 'Photo upload failed')
     return data.url as string
   }
 
@@ -66,7 +72,7 @@ export default function RegisterPage() {
           idPhotoUrl
         })
       })
-      const data = await res.json()
+      const data = await readJson(res)
       setLoading(false)
 
       if (!res.ok) {
@@ -129,8 +135,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <Input
-          type="password"
+        <PasswordInput
           placeholder="Password (min 8 characters)"
           value={password}
           onChange={e => setPassword(e.target.value)}

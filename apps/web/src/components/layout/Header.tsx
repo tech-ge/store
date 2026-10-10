@@ -1,11 +1,39 @@
 'use client'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { Logo } from '@/components/brand/Logo'
 import { SearchBar } from '@/components/search/SearchBar'
 import { useCart } from '@/hooks/useCart'
-import Link from 'next/link'
+import { LogoutButton } from '@/components/auth/LogoutButton'
+
+interface Me {
+  id: string
+  fullName: string
+  role: string
+  status: string
+}
 
 export function Header() {
   const { count } = useCart()
+  const [me, setMe] = useState<Me | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
+    if (!token) {
+      setLoading(false)
+      return
+    }
+    fetch('/api/auth/me', {
+      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include'
+    })
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => setMe(data))
+      .catch(() => setMe(null))
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-surface-border">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
@@ -14,7 +42,10 @@ export function Header() {
           <SearchBar />
         </div>
         <nav className="flex items-center gap-4">
-          <Link href="/favorites" className="text-sm text-navy hover:text-brand">Favorites</Link>
+          <Link href="/favorites" className="text-sm text-navy hover:text-brand">
+            Favorites
+          </Link>
+
           <Link href="/cart" className="relative text-sm text-navy hover:text-brand">
             Cart
             {count > 0 && (
@@ -23,7 +54,29 @@ export function Header() {
               </span>
             )}
           </Link>
-          <Link href="/login" className="text-sm text-navy hover:text-brand">Login</Link>
+
+          {loading ? null : me ? (
+            <>
+              {me.role === 'admin' && (
+                <Link href="/admin" className="text-sm text-navy hover:text-brand">
+                  Admin
+                </Link>
+              )}
+              <Link href="/profile" className="text-sm text-navy hover:text-brand max-w-[120px] truncate">
+                {me.fullName}
+              </Link>
+              <LogoutButton />
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm text-navy hover:text-brand">
+                Login
+              </Link>
+              <Link href="/register" className="text-sm bg-brand text-white px-3 py-1.5 rounded-lg hover:bg-brand-500">
+                Register
+              </Link>
+            </>
+          )}
         </nav>
       </div>
       <div className="md:hidden px-4 pb-3">
