@@ -1,11 +1,12 @@
 'use client'
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Container } from '@/components/layout/Container'
 import { Input } from '@/components/ui/Input'
 import { PasswordInput } from '@/components/ui/PasswordInput'
 import { Button } from '@/components/ui/Button'
 import { COUNTRIES, findCountry } from '@/lib/data/countries'
+import { Logo } from '@/components/brand/Logo'
+import { Icon } from '@/components/ui/Icon'
 
 async function readJson(res: Response) {
   const text = await res.text()
@@ -87,107 +88,115 @@ export default function RegisterPage() {
   }
 
   return (
-    <Container className="max-w-md py-12">
-      <h1 className="font-display text-2xl text-navy mb-6">Create account</h1>
-      <form onSubmit={onSubmit} className="space-y-3">
-        <Input
-          placeholder="Full name"
-          value={fullName}
-          onChange={e => setFullName(e.target.value)}
-          required
-        />
-
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-
-        <div className="grid grid-cols-3 gap-2">
-          <select
-            value={countryCode}
-            onChange={e => setCountryCode(e.target.value)}
-            required
-            className="col-span-1 px-3 py-2.5 rounded-xl border border-surface-border bg-white outline-none focus:border-brand text-sm"
-          >
-            <option value="">Country</option>
-            {COUNTRIES.map(c => (
-              <option key={c.code} value={c.code}>
-                {c.name} (+{c.dial})
-              </option>
-            ))}
-          </select>
-
-          <div className="col-span-2 flex items-center gap-2">
-            <span className="px-3 py-2.5 rounded-xl bg-surface-muted text-navy text-sm font-medium min-w-[64px] text-center">
-              {dial}
-            </span>
-            <Input
-              type="tel"
-              inputMode="numeric"
-              placeholder="Phone number"
-              value={phoneLocal}
-              onChange={e => setPhoneLocal(e.target.value.replace(/[^\d\s]/g, ''))}
-              required
-            />
-          </div>
+    <main className="account-scene min-h-screen px-4 py-8 sm:py-12">
+      <section className="mx-auto w-full max-w-xl rounded-3xl border border-white/80 bg-white/90 p-5 shadow-[0_24px_80px_rgba(11,31,58,0.10)] backdrop-blur-xl sm:p-9">
+        <Logo size={38} />
+        <div className="mb-7 mt-8">
+          <div className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-brand/10 text-brand"><Icon name="sparkles" size={22} /></div>
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-brand">Your next great find awaits</p>
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-navy">Create your account</h1>
+          <p className="mt-2 text-sm leading-6 text-text-muted">Join a global community of shoppers and independent sellers.</p>
         </div>
-
-        <PasswordInput
-          placeholder="Password (min 8 characters)"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          minLength={8}
-          required
-        />
-
-        <Input
-          placeholder="ID number (as printed on your ID)"
-          value={idNumber}
-          onChange={e => setIdNumber(e.target.value)}
-          required
-        />
-
-        <div className="rounded-xl border border-dashed border-surface-border bg-white p-4">
-          <label className="text-sm text-navy font-medium block mb-2">
-            Upload photo of your ID (front)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={onFile}
+        <form onSubmit={onSubmit} className="space-y-3">
+          <Input
+            placeholder="Full name"
+            value={fullName}
+            onChange={e => setFullName(e.target.value)}
             required
-            className="block w-full text-sm text-text-muted"
           />
-          {preview && (
-            <img
-              src={preview}
-              alt="ID preview"
-              className="mt-3 w-full max-h-64 object-contain rounded-lg border border-surface-border"
+
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+
+          <div className="grid grid-cols-3 gap-2">
+            <select
+              value={countryCode}
+              onChange={e => setCountryCode(e.target.value)}
+              required
+              className="col-span-1 min-w-0 rounded-xl border border-surface-border bg-white px-3 py-2.5 text-sm outline-none focus:border-brand"
+            >
+              <option value="">Country</option>
+              {COUNTRIES.map(c => (
+                <option key={c.code} value={c.code}>
+                  {c.name} (+{c.dial})
+                </option>
+              ))}
+            </select>
+
+            <div className="col-span-2 flex min-w-0 items-center gap-2">
+              <span className="min-w-[64px] rounded-xl bg-surface-muted px-3 py-2.5 text-center text-sm font-medium text-navy">
+                {dial}
+              </span>
+              <Input
+                type="tel"
+                inputMode="numeric"
+                placeholder="Phone number"
+                value={phoneLocal}
+                onChange={e => setPhoneLocal(e.target.value.replace(/[^\d\s]/g, ''))}
+                required
+              />
+            </div>
+          </div>
+
+          <PasswordInput
+            placeholder="Password (min 8 characters)"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            minLength={8}
+            required
+          />
+
+          <Input
+            placeholder="ID number (as printed on your ID)"
+            value={idNumber}
+            onChange={e => setIdNumber(e.target.value)}
+            required
+          />
+
+          <div className="rounded-2xl border border-dashed border-surface-border bg-surface-muted/50 p-4">
+            <label className="text-sm text-navy font-medium block mb-2">
+              Upload photo of your ID (front)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={onFile}
+              required
+              className="block w-full text-sm text-text-muted"
             />
-          )}
-          <p className="text-xs text-text-muted mt-2">
-            Make sure the ID number is clearly readable. Admin will review and activate your account.
+            {preview && (
+              <img
+                src={preview}
+                alt="ID preview"
+                className="mt-3 w-full max-h-64 object-contain rounded-lg border border-surface-border"
+              />
+            )}
+            <p className="text-xs text-text-muted mt-2">
+              Make sure the ID number is clearly readable. Admin will review and activate your account.
+            </p>
+          </div>
+
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+
+          <Button type="submit" disabled={loading} className="min-h-12 w-full !rounded-xl !font-semibold">
+            {loading ? 'Submitting…' : 'Create account'}
+          </Button>
+
+          <p className="text-xs text-text-muted text-center">
+            By creating an account you agree to our terms and privacy policy.
           </p>
-        </div>
+        </form>
 
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Submitting…' : 'Create account'}
-        </Button>
-
-        <p className="text-xs text-text-muted text-center">
-          By creating an account you agree to our terms and privacy policy.
+        <p className="mt-5 text-center text-sm text-text-muted">
+          Already have an account? <a href="/login" className="font-semibold text-brand">Sign in</a>
         </p>
-      </form>
-
-      <p className="mt-4 text-sm text-text-muted text-center">
-        Already have an account? <a href="/login" className="text-brand">Log in</a>
-      </p>
-    </Container>
+      </section>
+    </main>
   )
 }

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useCart } from '@/hooks/useCart'
 import { FavoriteButton } from './FavoriteButton'
 import { Price } from '@/components/price/Price'
+import { Icon } from '@/components/ui/Icon'
 
 export interface ProductCardData {
   id: string
@@ -61,9 +62,10 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           <Price usd={product.priceUsd} className="text-lg" />
           <button
             onClick={addToCart}
-            className="px-4 py-2 rounded-xl bg-brand text-white text-sm font-medium hover:bg-brand-500 transition shrink-0"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white transition hover:bg-brand-500 sm:px-4"
           >
-            Add
+            <Icon name="cart" size={16} />
+            <span>Add</span>
           </button>
         </div>
       </div>

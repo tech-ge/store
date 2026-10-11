@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { Icon } from '@/components/ui/Icon'
 
 export function LogoutButton({ className = '' }: { className?: string }) {
   const router = useRouter()
@@ -19,9 +20,11 @@ export function LogoutButton({ className = '' }: { className?: string }) {
     <button
       onClick={logout}
       disabled={loading}
-      className={`text-sm text-navy hover:text-brand disabled:opacity-50 ${className}`}
+      aria-label={loading ? 'Logging out' : 'Log out'}
+      className={`inline-flex h-10 items-center gap-2 rounded-xl px-2 text-sm text-navy transition hover:bg-surface-muted hover:text-brand disabled:opacity-50 sm:px-3 ${className}`}
     >
-      {loading ? 'Logging out…' : 'Logout'}
+      <Icon name="logout" size={17} />
+      <span className="hidden sm:inline">{loading ? 'Logging out…' : 'Log out'}</span>
     </button>
   )
 }

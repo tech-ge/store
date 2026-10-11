@@ -5,3 +5,63 @@
 html, body { background: #F5F7FA; color: #0B1F3A; }
 * { -webkit-tap-highlight-color: transparent; }
 ::selection { background: #FF6A0033; }
+
+.cinematic-hero {
+  background:
+    radial-gradient(ellipse at 82% 12%, rgba(255, 106, 0, 0.28), transparent 29%),
+    radial-gradient(ellipse at 68% 108%, rgba(35, 91, 145, 0.44), transparent 42%),
+    linear-gradient(118deg, #071426 0%, #0b1f3a 52%, #102d4d 100%);
+}
+
+.cinematic-hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  content: '';
+  mask-image: linear-gradient(90deg, transparent, #000 65%);
+}
+
+.hero-orbit {
+  position: absolute;
+  right: -9rem;
+  top: -18rem;
+  width: 37rem;
+  height: 37rem;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-orbit-one { transform: scaleY(0.68) rotate(-28deg); }
+.hero-orbit-two { transform: scaleY(0.68) rotate(28deg); }
+
+.hero-glow {
+  position: absolute;
+  right: 7%;
+  top: 21%;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 50%;
+  background: rgba(255, 117, 31, 0.16);
+  filter: blur(58px);
+  pointer-events: none;
+}
+
+.hero-emblem-ring {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 0 25px rgba(255, 255, 255, 0.025), 0 0 0 50px rgba(255, 255, 255, 0.02);
+}
+
+.hero-emblem-core {
+  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.2), transparent 55%), linear-gradient(145deg, rgba(255, 138, 43, 0.9), rgba(255, 106, 0, 0.4));
+  box-shadow: 0 20px 80px rgba(255, 106, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.account-scene {
+  background:
+    radial-gradient(ellipse at 8% 10%, rgba(255, 106, 0, 0.12), transparent 30%),
+    radial-gradient(ellipse at 92% 88%, rgba(32, 84, 137, 0.12), transparent 34%),
+    linear-gradient(145deg, #f9fafc, #eef2f7);
+}

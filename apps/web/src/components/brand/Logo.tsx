@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export function Logo({ size = 32 }: { size?: number }) {
+export function Logo({ size = 32, compact = false }: { size?: number; compact?: boolean }) {
   return (
     <Link href="/" aria-label="Door Delivery home" className="inline-flex items-center gap-2">
       <svg width={size} height={size} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -14,7 +14,7 @@ export function Logo({ size = 32 }: { size?: number }) {
         <rect x="18" y="14" width="28" height="36" rx="4" fill="#FFFFFF" opacity="0.18" />
         <circle cx="40" cy="32" r="2.5" fill="#FFFFFF" />
       </svg>
-      <span className="font-display text-lg tracking-tight">
+      <span className={`font-display text-lg tracking-tight ${compact ? 'hidden min-[380px]:inline' : ''}`}>
         <span className="text-navy">Door</span>
         <span className="text-brand">Delivery</span>
       </span>

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { connectMongo, Seller, Product, SellerFee, Order, Wallet } from '@dd/db-mongo'
 import { verifyAccess } from '@dd/security'
+import { Icon, type IconName } from '@/components/ui/Icon'
 
 export const dynamic = 'force-dynamic'
 
@@ -37,47 +38,59 @@ export default async function SellerHome() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-3xl text-navy">Seller overview</h1>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card label="Business" value={seller.businessName} />
-        <Card label="KYC status" value={seller.kycStatus} />
-        <Card label="Wallet (USD)" value={`$${balance.toFixed(2)}`} />
-        <Card label="Sales (all time)" value={String(salesCount)} />
+      <div className="cinematic-hero relative isolate overflow-hidden rounded-3xl px-6 py-7 text-white shadow-card sm:px-8 sm:py-9">
+        <div aria-hidden="true" className="hero-orbit hero-orbit-one" />
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-brand-400">Your business at a glance</p>
+            <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Welcome to your studio</h1>
+            <p className="mt-2 text-sm text-white/65">{seller.businessName}</p>
+          </div>
+          <Link href="/seller/products/new" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-500">
+            <Icon name="plus" size={18} /> Add product
+          </Link>
+        </div>
       </div>
 
-      <section className="bg-white rounded-2xl border border-surface-border p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-xl text-navy">Recent products</h2>
-          <Link href="/seller/products/new" className="text-sm text-brand">Add product</Link>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <Card icon="store" label="Business" value={seller.businessName} />
+        <Card icon="shield" label="KYC status" value={seller.kycStatus} />
+        <Card icon="wallet" label="Wallet balance" value={`$${balance.toFixed(2)}`} />
+        <Card icon="clipboard" label="Sales (all time)" value={String(salesCount)} />
+      </div>
+
+      <section className="rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="font-display text-xl font-semibold text-navy">Recent products</h2>
+          <Link href="/seller/products/new" className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-brand"><Icon name="plus" size={16} /> Add product</Link>
         </div>
-        <ul className="text-base divide-y divide-surface-border">
+        <ul className="divide-y divide-surface-border text-sm sm:text-base">
           {products.map((p: any) => (
-            <li key={String(p._id)} className="py-3 flex justify-between items-center">
-              <span className="truncate pr-4 text-navy">{p.title}</span>
-              <span className="font-medium">${p.priceUsd.toFixed(2)}</span>
+            <li key={String(p._id)} className="flex items-center justify-between gap-3 py-3">
+              <span className="min-w-0 truncate pr-2 text-navy">{p.title}</span>
+              <span className="shrink-0 font-semibold text-navy">${p.priceUsd.toFixed(2)}</span>
             </li>
           ))}
           {products.length === 0 && <li className="py-4 text-text-muted">No products yet.</li>}
         </ul>
       </section>
 
-      <section className="bg-white rounded-2xl border border-surface-border p-6">
-        <h2 className="font-display text-xl text-navy mb-4">Recent fees (5%)</h2>
-        <ul className="text-base divide-y divide-surface-border">
+      <section className="rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+        <h2 className="mb-4 font-display text-xl font-semibold text-navy">Recent fees (5%)</h2>
+        <ul className="divide-y divide-surface-border text-sm sm:text-base">
           {fees.map((f: any) => (
-            <li key={String(f._id)} className="py-3 flex justify-between">
+            <li key={String(f._id)} className="flex flex-wrap justify-between gap-2 py-3">
               <span className="text-text-muted">{new Date(f.chargedAt).toLocaleString()}</span>
-              <span>${f.feeAmount.toFixed(2)} · {f.status}</span>
+              <span className="font-medium text-navy">${f.feeAmount.toFixed(2)} · {f.status}</span>
             </li>
           ))}
           {fees.length === 0 && <li className="py-4 text-text-muted">No fees charged yet.</li>}
         </ul>
       </section>
 
-      <section className="bg-white rounded-2xl border border-surface-border p-6">
-        <h2 className="font-display text-xl text-navy mb-4">Totals</h2>
-        <div className="grid grid-cols-2 gap-4 text-base">
+      <section className="rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+        <h2 className="mb-4 font-display text-xl font-semibold text-navy">Totals</h2>
+        <div className="grid grid-cols-1 gap-4 text-base sm:grid-cols-2">
           <div>
             <div className="text-text-muted">Fees paid (USD)</div>
             <div className="text-2xl font-bold text-navy">${(totalFees[0]?.sum || 0).toFixed(2)}</div>
@@ -92,11 +105,12 @@ export default async function SellerHome() {
   )
 }
 
-function Card({ label, value }: { label: string; value: string }) {
+function Card({ icon, label, value }: { icon: IconName; label: string; value: string }) {
   return (
-    <div className="bg-white rounded-2xl border border-surface-border p-5">
+    <div className="rounded-2xl border border-surface-border bg-white p-4 shadow-card sm:p-5">
+      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand"><Icon name={icon} size={19} /></div>
       <div className="text-sm text-text-muted">{label}</div>
-      <div className="text-xl font-bold text-navy mt-1 truncate">{value}</div>
+      <div className="mt-1 truncate text-xl font-bold text-navy">{value}</div>
     </div>
   )
 }
