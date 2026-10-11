@@ -9,25 +9,25 @@ const config: Config = {
     extend: {
       colors: {
         navy: {
-          DEFAULT: '#0B1F3A',
-          900: '#0B1F3A',
-          800: '#122A4D',
-          700: '#1E3A66'
+          DEFAULT: '#0A1B33',
+          900: '#071426',
+          800: '#102746',
+          700: '#1C3B60'
         },
         brand: {
-          DEFAULT: '#FF6A00',
-          600: '#FF6A00',
-          500: '#FF8A2B',
-          400: '#FFA85C'
+          DEFAULT: '#E66A1A',
+          600: '#D85D12',
+          500: '#F17A2B',
+          400: '#FFA15C'
         },
         surface: {
           DEFAULT: '#FFFFFF',
-          muted: '#F5F7FA',
-          border: '#E5E9F0'
+          muted: '#F4F6F9',
+          border: '#E3E8EF'
         },
         text: {
-          DEFAULT: '#0B1F3A',
-          muted: '#64748B'
+          DEFAULT: '#0A1B33',
+          muted: '#627087'
         }
       },
       fontFamily: {
@@ -39,8 +39,9 @@ const config: Config = {
         '2xl': '20px'
       },
       boxShadow: {
-        card: '0 4px 20px rgba(11,31,58,0.06)',
-        lift: '0 10px 30px rgba(11,31,58,0.12)'
+        card: '0 5px 24px rgba(10,27,51,0.055)',
+        lift: '0 16px 38px rgba(10,27,51,0.12)',
+        soft: '0 2px 10px rgba(10,27,51,0.04)'
       }
     }
   },

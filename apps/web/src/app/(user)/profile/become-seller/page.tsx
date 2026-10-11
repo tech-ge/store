@@ -5,6 +5,7 @@ import { Container } from '@/components/layout/Container'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { COUNTRIES } from '@/lib/data/countries'
+import { authFetch } from '@/lib/auth-fetch'
 
 async function readJson(res: Response) {
   const t = await res.text()
@@ -24,11 +25,9 @@ export default function BecomeSellerPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const token = localStorage.getItem('accessToken')
-
-    const res = await fetch('/api/sellers/register', {
+    const res = await authFetch('/api/sellers/register', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         businessName,
         countryCode,

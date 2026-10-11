@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { connectMongo, Session, User } from '@dd/db-mongo'
 import { verifyRefresh, issueAccessToken } from '@dd/security'
+import { setAccessTokenCookie } from '@/lib/auth-cookies'
 
 interface UserLean {
   _id: unknown
@@ -11,7 +12,7 @@ interface UserLean {
 }
 
 export async function POST(req: Request) {
-  const token = req.headers.get('cookie')?.match(/refreshToken=([^;]+)/)?.[1]
+  const token = req.headers.get('cookie')?.match(/(?:^|;\s*)refreshToken=([^;]+)/)?.[1]
   if (!token) return NextResponse.json({ error: 'No refresh token' }, { status: 401 })
 
   try {
@@ -30,7 +31,9 @@ export async function POST(req: Request) {
     const accessToken = await issueAccessToken({
       sub: String(user._id), email: user.emailNormalized, role: user.role, country: user.countryCode
     })
-    return NextResponse.json({ accessToken })
+    const res = NextResponse.json({ accessToken })
+    setAccessTokenCookie(res, accessToken)
+    return res
   } catch {
     return NextResponse.json({ error: 'Invalid refresh token' }, { status: 401 })
   }

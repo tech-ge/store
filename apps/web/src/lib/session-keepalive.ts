@@ -7,6 +7,7 @@ export function startSessionKeepalive() {
   if (timer) return
 
   const refresh = async () => {
+    if (!localStorage.getItem('accessToken')) return
     const res = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' })
     if (!res.ok) return
     const data = await res.json().catch(() => null)

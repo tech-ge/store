@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import { connectMongo, User, Session, LoginAttempt } from '@dd/db-mongo'
 import { verifyPassword, issueAccessToken, issueRefreshToken, hashIdNumber, normalizeIdNumber, safeCompareHex } from '@dd/security'
 import { LoginSchema } from '@dd/validation/src/auth'
+import { setAuthCookies } from '@/lib/auth-cookies'
 
 interface UserWithSecrets {
   _id: unknown
@@ -93,10 +94,7 @@ export async function POST(req: Request) {
     }
   })
 
-  res.cookies.set('refreshToken', refreshToken, {
-    httpOnly: true, sameSite: 'strict', secure: process.env.NODE_ENV === 'production',
-    path: '/api/auth/refresh', maxAge: 30 * 24 * 60 * 60
-  })
+  setAuthCookies(res, accessToken, refreshToken)
 
   await LoginAttempt.create({ email: emailNorm, ip, deviceFingerprint: fp, userAgent: ua, success: true, reason: 'success' })
   return res

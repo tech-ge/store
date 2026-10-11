@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Container } from '@/components/layout/Container'
 import { Icon } from '@/components/ui/Icon'
+import { authFetch } from '@/lib/auth-fetch'
 
 interface Me {
   id: string
@@ -18,23 +19,29 @@ export default function ProfilePage() {
   const router = useRouter()
   const [me, setMe] = useState<Me | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken')
-    if (!token) { router.push('/login'); return }
-
-    fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.ok ? r.json() : null)
+    authFetch('/api/auth/me')
+      .then(async r => {
+        if (!r.ok) {
+          router.replace('/login')
+          return null
+        }
+        return await r.json() as Me
+      })
       .then((data: Me | null) => {
-        if (!data) { router.push('/login'); return }
+        if (!data) return
         if (data.role === 'seller') { router.replace('/seller'); return }
         if (data.role === 'admin') { router.replace('/admin'); return }
         setMe(data)
       })
+      .catch(() => setError('Unable to load your account. Please try again.'))
       .finally(() => setLoading(false))
   }, [router])
 
   if (loading) return <Container className="py-16 text-text-muted">Loading your account…</Container>
+  if (error) return <Container className="py-16 text-text-muted">{error}</Container>
   if (!me) return null
 
   return (

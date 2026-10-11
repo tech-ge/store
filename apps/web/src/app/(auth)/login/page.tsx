@@ -25,24 +25,29 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
 
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, idNumber, password })
-    })
-    const data = await readJson(res)
-    setLoading(false)
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, idNumber, password })
+      })
+      const data = await readJson(res)
 
-    if (!res.ok) { setError(data.error || 'Login failed'); return }
+      if (!res.ok) { setError(data.error || 'Login failed'); return }
 
-    localStorage.setItem('accessToken', data.accessToken)
+      localStorage.setItem('accessToken', data.accessToken)
 
-    const role = data.user?.role
-    if (role === 'admin') router.push('/admin')
-    else if (role === 'seller') router.push('/seller')
-    else router.push('/')
-    router.refresh()
+      const role = data.user?.role
+      if (role === 'admin') router.push('/admin')
+      else if (role === 'seller') router.push('/seller')
+      else router.push('/profile')
+      router.refresh()
+    } catch {
+      setError('Unable to sign in. Check your connection and try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

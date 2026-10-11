@@ -43,15 +43,22 @@ export default async function AdminHome() {
   ]
 
   return (
-    <div className="space-y-8">
-      <h1 className="font-display text-2xl text-navy">Dashboard</h1>
+    <div className="space-y-6 sm:space-y-8">
+      <div className="cinematic-hero relative isolate overflow-hidden rounded-3xl px-6 py-7 text-white shadow-card sm:px-8 sm:py-9">
+        <div aria-hidden="true" className="hero-orbit hero-orbit-one" />
+        <div className="relative z-10">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-brand-400">Platform overview</p>
+          <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Admin dashboard</h1>
+          <p className="mt-2 text-sm text-white/65">Monitor accounts, orders and marketplace activity.</p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map(c => (
           <Link
             key={c.label}
             href={c.href}
-            className={`bg-white rounded-xl border p-4 hover:border-brand transition ${
+            className={`rounded-2xl border bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-lift sm:p-5 ${
               c.highlight ? 'border-brand' : 'border-surface-border'
             }`}
           >
@@ -61,11 +68,11 @@ export default async function AdminHome() {
         ))}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <section className="bg-white rounded-xl border border-surface-border p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display text-lg text-navy">Recent users</h2>
-            <Link href="/admin/users" className="text-sm text-brand">View all</Link>
+      <div className="grid gap-5 xl:grid-cols-2">
+        <section className="rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="font-display text-lg font-semibold text-navy">Recent users</h2>
+            <Link href="/admin/users" className="shrink-0 text-sm font-semibold text-brand">View all</Link>
           </div>
           <ul className="text-sm divide-y divide-surface-border">
             {recentUsers.map((u: any) => (
@@ -81,10 +88,10 @@ export default async function AdminHome() {
           </ul>
         </section>
 
-        <section className="bg-white rounded-xl border border-surface-border p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display text-lg text-navy">Recent orders</h2>
-            <Link href="/admin/orders" className="text-sm text-brand">View all</Link>
+        <section className="rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="font-display text-lg font-semibold text-navy">Recent orders</h2>
+            <Link href="/admin/orders" className="shrink-0 text-sm font-semibold text-brand">View all</Link>
           </div>
           <ul className="text-sm divide-y divide-surface-border">
             {recentOrders.map((o: any) => (
@@ -104,8 +111,8 @@ export default async function AdminHome() {
         </section>
       </div>
 
-      <section className="bg-white rounded-xl border border-surface-border p-4">
-        <h2 className="font-display text-lg text-navy mb-3">Quick actions</h2>
+      <section className="rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+        <h2 className="mb-3 font-display text-lg font-semibold text-navy">Quick actions</h2>
         <div className="flex flex-wrap gap-2">
           <Link href="/admin/kyc" className="px-3 py-2 rounded-lg bg-surface-muted text-sm text-navy hover:bg-brand hover:text-white transition">Review KYC</Link>
           <Link href="/admin/products/new" className="px-3 py-2 rounded-lg bg-surface-muted text-sm text-navy hover:bg-brand hover:text-white transition">Add product</Link>

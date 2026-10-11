@@ -76,43 +76,49 @@ export default function WalletPage() {
   if (loading) return <Container className="py-16 text-text-muted">Loading wallet…</Container>
 
   return (
-    <Container className="py-10 max-w-3xl space-y-6">
-      <h1 className="font-display text-3xl text-navy">Wallet</h1>
-
-      <div className="bg-white rounded-2xl border border-surface-border p-6">
-        <div className="text-sm text-text-muted">Available balance</div>
-        <div className="text-4xl font-bold text-navy mt-1">${balance.toFixed(2)}</div>
+    <Container className="max-w-3xl space-y-6 py-8 sm:py-10">
+      <div>
+        <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-brand">Your account</p>
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-navy">Wallet</h1>
       </div>
 
-      <div className="bg-white rounded-2xl border border-surface-border p-6 space-y-3">
-        <h2 className="font-display text-lg text-navy">Deposit funds</h2>
+      <div className="cinematic-hero relative isolate overflow-hidden rounded-3xl p-6 text-white shadow-card sm:p-8">
+        <div aria-hidden="true" className="hero-orbit hero-orbit-one" />
+        <div className="relative z-10">
+          <div className="text-sm font-medium text-white/70">Available balance</div>
+          <div className="mt-1 text-4xl font-bold tracking-tight">${balance.toFixed(2)}</div>
+        </div>
+      </div>
+
+      <div className="space-y-3 rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+        <h2 className="font-display text-lg font-semibold text-navy">Deposit funds</h2>
         <input
           type="number"
           step="0.01"
           placeholder="Amount in USD"
           value={amount}
           onChange={e => setAmount(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl border border-surface-border outline-none focus:border-brand"
+          className="min-h-11 w-full rounded-xl border border-surface-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10"
         />
         <div className="flex flex-wrap gap-2">
           <button onClick={depositCard} disabled={busy !== null}
-            className="px-4 py-2.5 rounded-xl bg-brand text-white text-sm font-medium disabled:opacity-50">
+            className="min-h-11 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50">
             {busy === 'card' ? '…' : 'Pay with card'}
           </button>
           <button onClick={depositCrypto} disabled={busy !== null}
-            className="px-4 py-2.5 rounded-xl bg-surface-muted text-navy text-sm font-medium disabled:opacity-50">
+            className="min-h-11 rounded-xl bg-surface-muted px-4 py-2.5 text-sm font-semibold text-navy transition hover:bg-surface-border disabled:cursor-not-allowed disabled:opacity-50">
             {busy === 'crypto' ? '…' : 'Crypto (USDT)'}
           </button>
           <button onClick={depositMobile} disabled={busy !== null}
-            className="px-4 py-2.5 rounded-xl bg-surface-muted text-navy text-sm font-medium disabled:opacity-50">
+            className="min-h-11 rounded-xl bg-surface-muted px-4 py-2.5 text-sm font-semibold text-navy transition hover:bg-surface-border disabled:cursor-not-allowed disabled:opacity-50">
             {busy === 'mobile' ? '…' : 'Mobile money'}
           </button>
         </div>
         {msg && <p className="text-sm text-text-muted break-all">{msg}</p>}
       </div>
 
-      <div className="bg-white rounded-2xl border border-surface-border p-6">
-        <h2 className="font-display text-lg text-navy mb-4">Transactions ({txns.length})</h2>
+      <div className="rounded-3xl border border-surface-border bg-white p-5 shadow-card sm:p-6">
+        <h2 className="mb-4 font-display text-lg font-semibold text-navy">Transactions ({txns.length})</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-text-muted">

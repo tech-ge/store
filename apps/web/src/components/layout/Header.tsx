@@ -6,6 +6,7 @@ import { SearchBar } from '@/components/search/SearchBar'
 import { useCart } from '@/hooks/useCart'
 import { LogoutButton } from '@/components/auth/LogoutButton'
 import { Icon } from '@/components/ui/Icon'
+import { authFetch } from '@/lib/auth-fetch'
 
 interface Me {
   id: string
@@ -20,13 +21,7 @@ export function Header() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
-    if (!token) { setLoading(false); return }
-
-    fetch('/api/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-      credentials: 'include'
-    })
+    authFetch('/api/auth/me')
       .then(r => (r.ok ? r.json() : null))
       .then(setMe)
       .catch(() => setMe(null))

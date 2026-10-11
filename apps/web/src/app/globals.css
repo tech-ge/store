@@ -2,15 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body { background: #F5F7FA; color: #0B1F3A; }
+html, body { background: #F4F6F9; color: #0A1B33; }
+html { scroll-behavior: smooth; }
+body { font-feature-settings: "ss01" on; text-rendering: optimizeLegibility; }
 * { -webkit-tap-highlight-color: transparent; }
-::selection { background: #FF6A0033; }
+::selection { background: #E66A1A33; }
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid #E66A1A;
+    outline-offset: 2px;
+  }
+
+  input, select, textarea {
+    color: #0A1B33;
+    accent-color: #E66A1A;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #8792A3;
+    opacity: 1;
+  }
+
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+}
 
 .cinematic-hero {
   background:
-    radial-gradient(ellipse at 82% 12%, rgba(255, 106, 0, 0.28), transparent 29%),
+    radial-gradient(ellipse at 82% 12%, rgba(230, 106, 26, 0.28), transparent 29%),
     radial-gradient(ellipse at 68% 108%, rgba(35, 91, 145, 0.44), transparent 42%),
-    linear-gradient(118deg, #071426 0%, #0b1f3a 52%, #102d4d 100%);
+    linear-gradient(118deg, #071426 0%, #0a1b33 52%, #102d4d 100%);
 }
 
 .cinematic-hero::before {
@@ -44,7 +72,7 @@ html, body { background: #F5F7FA; color: #0B1F3A; }
   width: 14rem;
   height: 14rem;
   border-radius: 50%;
-  background: rgba(255, 117, 31, 0.16);
+  background: rgba(230, 106, 26, 0.16);
   filter: blur(58px);
   pointer-events: none;
 }
@@ -55,13 +83,13 @@ html, body { background: #F5F7FA; color: #0B1F3A; }
 }
 
 .hero-emblem-core {
-  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.2), transparent 55%), linear-gradient(145deg, rgba(255, 138, 43, 0.9), rgba(255, 106, 0, 0.4));
-  box-shadow: 0 20px 80px rgba(255, 106, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.25);
+  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.2), transparent 55%), linear-gradient(145deg, rgba(241, 122, 43, 0.9), rgba(230, 106, 26, 0.4));
+  box-shadow: 0 20px 80px rgba(230, 106, 26, 0.2), inset 0 1px rgba(255, 255, 255, 0.25);
 }
 
 .account-scene {
   background:
-    radial-gradient(ellipse at 8% 10%, rgba(255, 106, 0, 0.12), transparent 30%),
+    radial-gradient(ellipse at 8% 10%, rgba(230, 106, 26, 0.12), transparent 30%),
     radial-gradient(ellipse at 92% 88%, rgba(32, 84, 137, 0.12), transparent 34%),
     linear-gradient(145deg, #f9fafc, #eef2f7);
 }
